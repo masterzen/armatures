@@ -5,7 +5,7 @@ title: Armatures
 
 # Armatures #
 
-Here are the armatures:
+Here are all the current armatures:
 
 <table>
     <th>
@@ -19,3 +19,4 @@ Here are the armatures:
       {% endif %}
     {% endfor %}
 </table>
+

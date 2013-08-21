@@ -76,10 +76,24 @@ task :validate do
   end
 end
 
-task :gh do
-  PRESITE="_presite"
-  FileUtils.rm_r(PRESITE)
-  Dir.mkdir(PRESITE)
+task :gh => [:armsite, :gh_pages] do
+end
+
+require 'bundler/setup'
+require 'grancher/task'
+Grancher::Task.new(name = 'gh_pages') do |g|
+  g.branch = 'gh-pages'
+#  g.push_to = 'origin'
+  g.message = 'Updated armatures'
+  g.directory '_armsite'
+  g.file 'jekyll/_config.yml', '_config.yml'
+  g.file 'index.md'
+end
+
+task :armsite do
+  PRESITE="_armsite"
+  FileUtils.rm_rf(PRESITE)
+  FileUtils.mkdir_p(PRESITE)
   puts "Generating _presite"
   Dir.entries(".").find_all { |d| d =~ /^arm-[\d]+\./ }.each do |d|
     begin
@@ -119,18 +133,6 @@ task :gh do
         puts "copying #{f}"
         FileUtils.cp(f, File.join(PRESITE, f))
       end
-      puts "pushing to gh-pages"
-      require 'grancher'
-      grancher = Grancher.new do |g|
-        g.branch = 'gh-pages'         # alternatively, g.refspec = 'ghpages:refs/heads/ghpages'
-        g.push_to = 'origin'
-        g.message = 'Updated armatures'
-        g.directory '_presite'
-        g.file '_config.yml'
-        g.file 'index.md'
-      end
-      grancher.commit
-#      grancher.push
     rescue => detail
       puts "Could not parse #{d}: #{detail}"
       puts detail.backtrace
