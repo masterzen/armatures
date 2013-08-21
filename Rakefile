@@ -85,9 +85,8 @@ Grancher::Task.new(name = 'gh_pages') do |g|
   g.branch = 'gh-pages'
 #  g.push_to = 'origin'
   g.message = 'Updated armatures'
-  g.directory '_armsite'
+  g.directory '_armsite','_armsite'
   g.file 'jekyll/_config.yml', '_config.yml'
-  g.file 'index.md'
 end
 
 task :armsite do
@@ -122,8 +121,10 @@ task :armsite do
             fh2.puts("main-page: true") if f =~ /^index\.md$/
             fh2.puts("---")
             fh2.puts
-            while buffer = fh.read(4096)
-              fh2 << buffer
+            # copy over the full file, but rewrite internal links
+            # to md file to .html files
+            fh.readlines.each do |line|
+              fh2.puts line.gsub(/\((\w+)\.md\)/, '(\1.html)' )
             end
           end
         end
