@@ -75,3 +75,65 @@ task :validate do
     end
   end
 end
+
+task :gh do
+  PRESITE="_presite"
+  FileUtils.rm_r(PRESITE)
+  Dir.mkdir(PRESITE)
+  puts "Generating _presite"
+  Dir.entries(".").find_all { |d| d =~ /^arm-[\d]+\./ }.each do |d|
+    begin
+      arm = Armature.new(d)
+      arm.load
+#      arm.validate
+      presite_arm_dir = File.join(PRESITE, d)
+      puts "Generating arm in #{presite_arm_dir}"
+      Dir.mkdir(presite_arm_dir) unless File.directory?(presite_arm_dir)
+      Dir.entries(d).find_all { |f| f =~ /\.md$/ }.each do |f|
+        puts "Reading: #{f}"
+        File.open(File.join(d, f), "r") do |fh|
+          presite_file = File.join(presite_arm_dir, f)
+          puts "Generating arm file #{presite_file}"
+          File.open(presite_file, "w") do |fh2|
+            fh2.puts("---")
+            fh2.puts("layout: page")
+            fh2.puts("title: #{arm['title']}")
+            fh2.puts("arm: #{arm['arm']}")
+            fh2.puts("champion: #{arm['champion']}")
+            fh2.puts("revision: #{arm['revision']}")
+            fh2.puts("project: #{arm['project']}")
+            fh2.puts("implementation: #{arm['implementation']}")
+            fh2.puts("requires-arms: #{arm['requires-arms']}")
+            fh2.puts("issues: #{arm['issues']}")
+            fh2.puts("main-page: true") if f =~ /^index\.md$/
+            fh2.puts("---")
+            fh2.puts
+            while buffer = fh.read(4096)
+              fh2 << buffer
+            end
+          end
+        end
+      end
+      # finally copy over all the top level pages
+      Dir.entries(".").find_all { |f| f =~ /\.md$/ }.each do |f|
+        puts "copying #{f}"
+        FileUtils.cp(f, File.join(PRESITE, f))
+      end
+      puts "pushing to gh-pages"
+      require 'grancher'
+      grancher = Grancher.new do |g|
+        g.branch = 'gh-pages'         # alternatively, g.refspec = 'ghpages:refs/heads/ghpages'
+        g.push_to = 'origin'
+        g.message = 'Updated armatures'
+        g.directory '_presite'
+        g.file '_config.yml'
+        g.file 'index.md'
+      end
+      grancher.commit
+#      grancher.push
+    rescue => detail
+      puts "Could not parse #{d}: #{detail}"
+      puts detail.backtrace
+    end
+  end
+end
