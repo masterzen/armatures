@@ -15,7 +15,7 @@ Here are all the current armatures:
       {% if page.main-page %}
         {% if page.arm < 10 %}
       <tr>
-        <td>{{page.arm}}</td><td><a href="{{page.url}}">{{page.title}}</a></td><td>{{page.champion}}</td><td>{{page.project}}</td>
+        <td>{{page.arm}}</td><td><a href="{{page.url}}">{{page.title}}</a></td><td>{{page.revision}}</td><td>{{page.champion}}</td><td>{{page.project}}</td>
       </tr>
         {% endif %}
       {% endif %}
@@ -24,7 +24,7 @@ Here are all the current armatures:
       {% if page.main-page %}
         {% if page.arm >= 10 %}
       <tr>
-        <td>{{page.arm}}</td><td><a href="{{page.url}}">{{page.title}}</a></td><td>{{page.champion}}</td><td>{{page.project}}</td>
+        <td>{{page.arm}}</td><td><a href="{{page.url}}">{{page.title}}</a></td><td>{{page.revision}}</td><td>{{page.champion}}</td><td>{{page.project}}</td>
       </tr>
         {% endif %}
       {% endif %}
