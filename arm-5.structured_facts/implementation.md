@@ -1,0 +1,19 @@
+---
+layout: page
+title: Structured Facts in Facter
+arm: 5
+champion: hlindberg
+revision: 0.0.1
+project: https://github.com/puppetlabs/facter
+implementation: ["https://github.com/kbarber/facter/tree/ticket/master/4561-add_structured_data"]
+requires-arms: []
+issues: ["https://projects.puppetlabs.com/issues/4561"]
+---
+
+Implementation
+==============
+<!-- If there is an exploratory/reference implementation of the proposal available, describe it
+     in this document.
+-->
+
+https://github.com/kbarber/facter/tree/ticket/master/4561-add_structured_data
